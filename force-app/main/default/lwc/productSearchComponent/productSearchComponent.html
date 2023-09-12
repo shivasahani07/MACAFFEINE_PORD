@@ -1,0 +1,28 @@
+<template>
+    <lightning-card>
+        <div>
+            <h1 style="font-size: 20px;font-weight: bold;text-align: center;">Add Product</h1>
+        </div>
+        <div class="slds-m-around_medium">
+            <lightning-layout multiple-rows>
+                <lightning-layout-item size="12" padding="around-small">
+                    <lightning-input type="search" label="Search Product" onchange={handleSearch}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={data}>
+                <div style="height:300px">
+                <lightning-datatable class='slds-scrollable_y' data-id="datatable" key-field="Id" data={data} columns={columns}
+                    show-row-number-column="true" selected-rows={selectedRows} max-row-selection="20" onrowselection={handleRowSelection} style="overflow:scroll">
+                </lightning-datatable>
+                </div>
+            </template>
+            <div>
+                <lightning-button variant="brand" label="Add Product" title="Primary action" onclick={handleClick} class="slds-m-left_x-small slds-float_right slds-p-vertical_medium"></lightning-button>
+            </div>
+            <template if:true={error}>
+                {error}>
+            </template>
+        </div>
+        
+    </lightning-card>
+</template>
