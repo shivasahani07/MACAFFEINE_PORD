@@ -15,7 +15,7 @@ public class InstagramUtilityClass {
     private static String accessToken                   = fap.accessToken__c;
     private static String basicUrl                      = fap.basicUrl__c;
     private static String businessUserId                = fap.businessUserId__c;
-    private static Id caseRecordTypeId                  = Schema.SObjectType.case.getRecordTypeInfosByName().get('Instagram').getRecordTypeId();
+    private static Id caseRecordTypeId                  = Schema.SObjectType.case.getRecordTypeInfosByName().get('Social').getRecordTypeId();
     
     // This method will get the business user id
     public static string getInstaBusinessUserId(){
@@ -37,6 +37,7 @@ public class InstagramUtilityClass {
     
     //Pass this method the Comment id and the media id will be fetched.
     public static void getMediaIdFromCommentId(String commentId){
+        system.debug('commentId--->'+commentId);
         List<Case> caseList = new List<Case>();
         String endpointUrl = basicUrl+commentId+'?fields=replies{text,username,timestamp,user},text,user,timestamp,username,media';
         Map<String, String> queryParams = new Map<String, String>();
@@ -50,6 +51,7 @@ public class InstagramUtilityClass {
                 mediaId = '17977476455235820';
             }else{
                 mediaId = jsonResponse.media.id;
+                system.debug('mediaId-->'+mediaId);
             }
             getMediaDetailsFromMediaId(mediaId);    
         }else{
@@ -90,11 +92,12 @@ public class InstagramUtilityClass {
                 jsonResponse = '{"id": "17841405793087218", "media_url": "https://www.example.com/image.jpg", "comments": { "data": [{"id": "17851087209098192", "text": "Awesome!", "username": "user1", "timestamp": "2023-07-29T12:40:00+0000"}] } }';
                 postInfo = (InstagramMediaResponseWrapper) JSON.deserialize(jsonResponse, InstagramMediaResponseWrapper.class);
             }else{
+                system.debug('Coming here');
                 HttpResponse response = DynamicHttpCallout.makeHttpGetCallout(endpointUrl, queryParams, headers);
                 postInfo = (InstagramMediaResponseWrapper) JSON.deserialize(response.getBody(), InstagramMediaResponseWrapper.class);
             }
                 
-           
+            system.debug('postInfo-->'+postInfo);           
             if(commentsOnPostByPostId.keyset().contains(postInfo.Id)){
                 if(postInfo.comments != null){
                     for(InstagramMediaResponseWrapper.cls_data postInfoRec : postInfo.comments.data){
@@ -132,15 +135,7 @@ public class InstagramUtilityClass {
             List<Post_Comments__c> newComments = new   List<Post_Comments__c> ();
             if(postCommentList.size() > 0){
                 List<Post_Comments__c> postCommentData = [Select Comment__c,Comment_Id__c,Commented_By__c,Post_Url__c,Post_comment_Time__c from Post_Comments__c where case__r.Post_Id__c = :mediaId];
-                if(postCommentData.size() > 15){
-                    delete postCommentData;
-                    insert postCommentList;
-                }else{
-                    for (Integer i = 0; i<= 10; i++) {
-                        newComments.add(postCommentList[i]);
-                        insert newComments;
-                    }
-                }
+                insert postCommentList;
             }
             if(postCommentListToBeUpdated.size() > 0){
                 update postCommentListToBeUpdated;
@@ -148,7 +143,7 @@ public class InstagramUtilityClass {
             return 'Success';
             
         }catch(Exception e){
-            system.debug('Error message'+e.getMessage());
+            system.debug('Error message'+e.getMessage()+'@'+e.getLineNumber());
             return e.getMessage();    
         }
         

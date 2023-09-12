@@ -1,6 +1,6 @@
 @isTest
 public class InstagramAuthHelperTest {
-    private static Id caseRecordTypeId                  = Schema.SObjectType.case.getRecordTypeInfosByName().get('Instagram').getRecordTypeId();
+    private static Id caseRecordTypeId                  = Schema.SObjectType.case.getRecordTypeInfosByName().get('Social').getRecordTypeId();
     /*static testmethod void testsample(){  
         Case caseRec = new Case();
         caseRec.Post_Id__c = 'tweetId';
@@ -49,7 +49,7 @@ public class InstagramAuthHelperTest {
     static testmethod void getPostDetailsByHashTagId_test(){  
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new InstagramAuthHelperTestMockTest());
-        InstagramAuthHelper.getPostDetailsByHashTagId('INSTA');
+        InstagramAuthHelper.getPostDetailsByHashTagId();
         Test.stopTest();
     }
     

@@ -3,7 +3,7 @@ public class InstagramHashTagCreationBatchTest {
   @isTest
     static void testBatchExecution() {
         // Create test data
-        RecordType caseRecordType = [SELECT Id FROM RecordType WHERE SObjectType = 'Case' AND DeveloperName = 'Instagram' LIMIT 1];
+        RecordType caseRecordType = [SELECT Id FROM RecordType WHERE SObjectType = 'Case' AND DeveloperName = 'Social' LIMIT 1];
 
         // Create a test case record
         Case testCase = new Case(
